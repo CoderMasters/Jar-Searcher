@@ -15,6 +15,9 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.actions.Presenter;
 
+/**
+ * Clase que especifica el escucha de eventos a usar en netbeans.
+ */
 @ActionID(
         category = "File",
         id = "com.java2s.toolbar.JarFinderActionListener"

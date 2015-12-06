@@ -11,11 +11,14 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.Beans;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -35,10 +38,16 @@ import org.openide.util.NbBundle;
  */
 public class JarSearchPanel extends javax.swing.JPanel {
 
-    Hashtable<String, String> searchSitesAndURLs
-            = new Hashtable<String, String>();
-    Hashtable<String, String> searchSitesAndImages
-            = new Hashtable<String, String>();
+    /**
+     * Hols a map between search sites and URL's.
+     */
+    private final transient Map<String, String> sitesAndURLs
+            = new HashMap<String, String>();
+    /**
+     * Hols a map between search sites and it graphic resources.
+     */
+    private final transient Map<String, String> sitesAndImages
+            = new HashMap<String, String>();
     /**
      * Field for serializing.
      */
@@ -46,10 +55,11 @@ public class JarSearchPanel extends javax.swing.JPanel {
     /**
      * base path for image resources.
      */
-    final private String basePath = "/web/aprendiendola/toolbar/jarsearch/";
+    private static final String BASE_PATH
+            = "/web/aprendiendola/toolbar/jarsearch/";
 
     /**
-     * Creates new form Java2sPanel
+     * Creates new form Java2sPanel.
      */
     public JarSearchPanel() {
         super();
@@ -57,12 +67,12 @@ public class JarSearchPanel extends javax.swing.JPanel {
                 "http://cse.google.com/cse?cx="
                 + "partner-pub-1130008796007602:iri8be-v211"
                 + "&siteurl=www.java2s.com&q=",
-                basePath + "java2s.gif");
+                BASE_PATH + "java2s.gif");
         addSearchSite("findJar",
                 "http://www.findjar.com/index.x?query=",
-                basePath + "jarsearch.gif");
+                BASE_PATH + "jarsearch.gif");
         addSearchSite("sapjarfinder",
-                "http://sapjarfinder.com/?q=", basePath + "sapjarfinder.gif");
+                "http://sapjarfinder.com/?q=", BASE_PATH + "sapjarfinder.gif");
         addSearchSite("Google Search",
                 "https://www.google.com.mx/search?safe=off&noj=&q=jar+",
                 "google.gif");
@@ -78,9 +88,9 @@ public class JarSearchPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblSearch = new JLabel();
+        final JLabel lblSearch = new JLabel();
         searchText = new JTextField();
-        jComboBox1 = new JComboBox(new Vector(searchSitesAndImages.keySet()));
+        jComboBox1 = new JComboBox(new Vector(sitesAndImages.keySet()));
         jComboBox1.setRenderer(new MyComboRendere());
 
         setLayout(new BorderLayout());
@@ -88,9 +98,9 @@ public class JarSearchPanel extends javax.swing.JPanel {
         Mnemonics.setLocalizedText(lblSearch, NbBundle.getMessage(JarSearchPanel.class, "JarSearchPanel.lblSearch.text")); // NOI18N
         add(lblSearch, BorderLayout.LINE_START);
 
-        searchText.setColumns(20);
         searchText.setText(NbBundle.getMessage(JarSearchPanel.class, "JarSearchPanel.searchText.text")); // NOI18N
-        searchText.setToolTipText(NbBundle.getMessage(JarSearchPanel.class, "JarSearchPanel.searchText.toolTipText")); // NOI18N
+        searchText.setToolTipText(NbBundle.getBundle(JarSearchPanel.class).getString("JarSearchPanel.searchText.toolTipText")); // NOI18N
+        searchText.setMinimumSize(null);
         searchText.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 searchTextActionPerformed(evt);
@@ -102,23 +112,32 @@ public class JarSearchPanel extends javax.swing.JPanel {
         add(jComboBox1, BorderLayout.LINE_END);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Detects action events on the text field and call the search
+     * functionality.
+     *
+     * @param evt the event
+     * @see #search()
+     */
     private void searchTextActionPerformed(ActionEvent evt) {//GEN-FIRST:event_searchTextActionPerformed
         search();
     }//GEN-LAST:event_searchTextActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JComboBox jComboBox1;
-    private JLabel lblSearch;
-    private JTextField searchText;
+    private transient JComboBox jComboBox1;
+    private transient JTextField searchText;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Performs the search in the specified search site.
+     */
     private void search() {
         try {
             final String textToSearch = URLEncoder.encode(
                     this.searchText.getText(),
                     "UTF-8");
-            final String url = searchSitesAndURLs.get(
-                    jComboBox1.getSelectedItem());
+            final String url = sitesAndURLs.get(
+                    (String) jComboBox1.getSelectedItem());
             URLDisplayer.getDefault().showURL(new URL(url + textToSearch));
         } catch (UnsupportedEncodingException eee) {
             Exceptions.printStackTrace(eee); //nothing much to do
@@ -127,12 +146,22 @@ public class JarSearchPanel extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Adds a new search site.
+     *
+     * @param siteName name of th site
+     * @param siteURL url of the site
+     * @param siteIcon path of the icon to be displayed
+     */
     private void addSearchSite(final String siteName, final String siteURL,
             final String siteIcon) {
-        searchSitesAndURLs.put(siteName, siteURL);
-        searchSitesAndImages.put(siteName, siteIcon);
+        sitesAndURLs.put(siteName, siteURL);
+        sitesAndImages.put(siteName, siteIcon);
     }
 
+    /**
+     * Handles the rendering of List elements.
+     */
     class MyComboRendere implements ListCellRenderer {
 
         @Override
@@ -140,12 +169,13 @@ public class JarSearchPanel extends javax.swing.JPanel {
                 final Object value, final int index, final boolean isSelected,
                 final boolean cellHasFocus) {
 
-            JLabel label = new JLabel();
+            final JLabel label = new JLabel();
             label.setOpaque(true);
             final String nombreSitio = value.toString();
             label.setText(nombreSitio);
-            label.setIcon(new ImageIcon(getClass().getResource(
-                    searchSitesAndImages.get(value))));
+            label.setIcon(new ImageIcon(
+                    getClass().getResource(sitesAndImages.get(nombreSitio)))
+            );
             if (isSelected) {
                 label.setBackground(Color.LIGHT_GRAY);
             }
