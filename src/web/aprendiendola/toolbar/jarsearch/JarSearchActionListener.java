@@ -23,8 +23,8 @@ import org.openide.util.actions.Presenter;
         id = "com.java2s.toolbar.JarFinderActionListener"
 )
 @ActionRegistration(
-        iconBase = "com/java2s/toolbar/java2s.gif",
-        displayName = "#CTL_JarFinderActionListener"
+        displayName = "#CTL_JarFinderActionListener",
+        lazy = false
 )
 @ActionReference(path = "Toolbars/Search", position = Integer.MAX_VALUE)
 @Messages("CTL_JarFinderActionListener=JarFinder")

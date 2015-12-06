@@ -11,15 +11,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.Beans;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -90,9 +87,11 @@ public class JarSearchPanel extends javax.swing.JPanel {
 
         final JLabel lblSearch = new JLabel();
         searchText = new JTextField();
-        jComboBox1 = new JComboBox(new Vector(sitesAndImages.keySet()));
-        jComboBox1.setRenderer(new MyComboRendere());
+        sitesCombo = new JComboBox(sitesAndImages.keySet().toArray());
+        sitesCombo.setRenderer(new MyComboRendere());
+        ;
 
+        setMinimumSize(new Dimension(150, 20));
         setLayout(new BorderLayout());
 
         Mnemonics.setLocalizedText(lblSearch, NbBundle.getMessage(JarSearchPanel.class, "JarSearchPanel.lblSearch.text")); // NOI18N
@@ -100,7 +99,8 @@ public class JarSearchPanel extends javax.swing.JPanel {
 
         searchText.setText(NbBundle.getMessage(JarSearchPanel.class, "JarSearchPanel.searchText.text")); // NOI18N
         searchText.setToolTipText(NbBundle.getBundle(JarSearchPanel.class).getString("JarSearchPanel.searchText.toolTipText")); // NOI18N
-        searchText.setMinimumSize(null);
+        searchText.setMinimumSize(new Dimension(4, 2));
+        searchText.setPreferredSize(new Dimension(100, 20));
         searchText.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 searchTextActionPerformed(evt);
@@ -108,8 +108,8 @@ public class JarSearchPanel extends javax.swing.JPanel {
         });
         add(searchText, BorderLayout.CENTER);
 
-        jComboBox1.setMinimumSize(new Dimension(40, 20));
-        add(jComboBox1, BorderLayout.LINE_END);
+        sitesCombo.setMinimumSize(new Dimension(40, 20));
+        add(sitesCombo, BorderLayout.LINE_END);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -124,8 +124,10 @@ public class JarSearchPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_searchTextActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private transient JComboBox jComboBox1;
+    /** Variable that holds the search terms. */
     private transient JTextField searchText;
+    /** Combo containing search site names. */
+    private transient JComboBox<String> sitesCombo;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -137,7 +139,7 @@ public class JarSearchPanel extends javax.swing.JPanel {
                     this.searchText.getText(),
                     "UTF-8");
             final String url = sitesAndURLs.get(
-                    (String) jComboBox1.getSelectedItem());
+                    (String) sitesCombo.getSelectedItem());
             URLDisplayer.getDefault().showURL(new URL(url + textToSearch));
         } catch (UnsupportedEncodingException eee) {
             Exceptions.printStackTrace(eee); //nothing much to do
@@ -162,16 +164,17 @@ public class JarSearchPanel extends javax.swing.JPanel {
     /**
      * Handles the rendering of List elements.
      */
-    class MyComboRendere implements ListCellRenderer {
+    class MyComboRendere implements ListCellRenderer<String> {
 
         @Override
-        public Component getListCellRendererComponent(final JList list,
-                final Object value, final int index, final boolean isSelected,
+        public Component getListCellRendererComponent(
+                final JList<? extends String> list,
+                final String value, final int index,
+                final boolean isSelected,
                 final boolean cellHasFocus) {
-
             final JLabel label = new JLabel();
             label.setOpaque(true);
-            final String nombreSitio = value.toString();
+            final String nombreSitio = value;
             label.setText(nombreSitio);
             label.setIcon(new ImageIcon(
                     getClass().getResource(sitesAndImages.get(nombreSitio)))
