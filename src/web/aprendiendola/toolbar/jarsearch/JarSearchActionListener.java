@@ -25,10 +25,11 @@ import org.openide.util.actions.Presenter;
 )
 @ActionReference(path = "Toolbars/Search", position = Integer.MAX_VALUE)
 @Messages("CTL_JarFinderActionListener=JarFinder")
-public final class JarSearchActionListener extends AbstractAction implements ActionListener, Presenter.Toolbar {
+public final class JarSearchActionListener extends AbstractAction
+        implements ActionListener, Presenter.Toolbar {
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent event) {
         //delegated to toolbar
     }
 

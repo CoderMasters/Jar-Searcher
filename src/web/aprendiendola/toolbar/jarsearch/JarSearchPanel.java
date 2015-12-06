@@ -35,19 +35,37 @@ import org.openide.util.NbBundle;
  */
 public class JarSearchPanel extends javax.swing.JPanel {
 
-    Hashtable<String, String> searchSitesAndURLs = new Hashtable<String, String>();
-    Hashtable<String, String> searchSitesAndImages = new Hashtable<String, String>();
+    Hashtable<String, String> searchSitesAndURLs
+            = new Hashtable<String, String>();
+    Hashtable<String, String> searchSitesAndImages
+            = new Hashtable<String, String>();
+    /**
+     * Field for serializing.
+     */
     private static final long serialVersionUID = 1L;
-    final String basePath = "/web/aprendiendola/toolbar/jarsearch/";
+    /**
+     * base path for image resources.
+     */
+    final private String basePath = "/web/aprendiendola/toolbar/jarsearch/";
 
     /**
      * Creates new form Java2sPanel
      */
     public JarSearchPanel() {
-        addSearchSite("Java2s", "http://cse.google.com/cse?cx=partner-pub-1130008796007602:iri8be-v211&siteurl=www.java2s.com&q=", basePath + "java2s.gif");
-        addSearchSite("findJar", "http://www.findjar.com/index.x?query=", basePath + "jarsearch.gif");
-        addSearchSite("sapjarfinder", "http://sapjarfinder.com/?q=", basePath + "sapjarfinder.gif");
-        addSearchSite("Google Search", "https://www.google.com.mx/search?safe=off&noj=&q=jar+", "google.gif");
+        super();
+        addSearchSite("Java2s",
+                "http://cse.google.com/cse?cx="
+                + "partner-pub-1130008796007602:iri8be-v211"
+                + "&siteurl=www.java2s.com&q=",
+                basePath + "java2s.gif");
+        addSearchSite("findJar",
+                "http://www.findjar.com/index.x?query=",
+                basePath + "jarsearch.gif");
+        addSearchSite("sapjarfinder",
+                "http://sapjarfinder.com/?q=", basePath + "sapjarfinder.gif");
+        addSearchSite("Google Search",
+                "https://www.google.com.mx/search?safe=off&noj=&q=jar+",
+                "google.gif");
         initComponents();
     }
 
@@ -96,17 +114,21 @@ public class JarSearchPanel extends javax.swing.JPanel {
 
     private void search() {
         try {
-            String textToSearch = URLEncoder.encode(this.searchText.getText(), "UTF-8");
-            String url = searchSitesAndURLs.get(jComboBox1.getSelectedItem());
+            final String textToSearch = URLEncoder.encode(
+                    this.searchText.getText(),
+                    "UTF-8");
+            final String url = searchSitesAndURLs.get(
+                    jComboBox1.getSelectedItem());
             URLDisplayer.getDefault().showURL(new URL(url + textToSearch));
         } catch (UnsupportedEncodingException eee) {
-            Exceptions.printStackTrace(eee);//nothing much to do
+            Exceptions.printStackTrace(eee); //nothing much to do
         } catch (MalformedURLException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
 
-    private void addSearchSite(String siteName, String siteURL, String siteIcon) {
+    private void addSearchSite(final String siteName, final String siteURL,
+            final String siteIcon) {
         searchSitesAndURLs.put(siteName, siteURL);
         searchSitesAndImages.put(siteName, siteIcon);
     }
@@ -114,14 +136,16 @@ public class JarSearchPanel extends javax.swing.JPanel {
     class MyComboRendere implements ListCellRenderer {
 
         @Override
-        public Component getListCellRendererComponent(JList list, Object value,
-                int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(final JList list,
+                final Object value, final int index, final boolean isSelected,
+                final boolean cellHasFocus) {
 
             JLabel label = new JLabel();
             label.setOpaque(true);
-            String nombreSitio = value.toString();
+            final String nombreSitio = value.toString();
             label.setText(nombreSitio);
-            label.setIcon(new ImageIcon(getClass().getResource(searchSitesAndImages.get(value))));
+            label.setIcon(new ImageIcon(getClass().getResource(
+                    searchSitesAndImages.get(value))));
             if (isSelected) {
                 label.setBackground(Color.LIGHT_GRAY);
             }
